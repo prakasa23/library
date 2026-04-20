@@ -2,9 +2,17 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
-const db = new sqlite3.Database('./library.db');
+
+// VERCEL FIX: Vercel only allows writing to the /tmp folder
+// This code checks if we are on Vercel or your computer
+const dbPath = process.env.VERCEL ? '/tmp/library.db' : './library.db';
+
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) console.error("Database opening error: ", err);
+});
 
 db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, book TEXT, action TEXT, date DATETIME DEFAULT CURRENT_TIMESTAMP)");
@@ -13,9 +21,12 @@ db.serialize(() => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
-app.get('/options', (req, res) => res.sendFile(path.join(__dirname, 'public/options.html')));
-app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public/login.html')));
+// IMPORTANT: Use absolute paths for Vercel
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/options', (req, res) => res.sendFile(path.join(__dirname, 'public', 'options.html')));
+app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+
+// ... (Rest of your POST routes stay exactly the same as before) ...
 
 app.post('/submit', (req, res) => {
     const { user, book, action } = req.body;
@@ -28,6 +39,7 @@ app.post('/admin-panel', (req, res) => {
     const { username, password } = req.body;
     if (username === 'admin' && password === '1234') {
         db.all("SELECT * FROM records", (err, rows) => {
+            if (err) return res.send("Error reading database.");
             let trs = rows.map(r => `<tr><td>${r.id}</td><td>${r.user}</td><td>${r.book}</td><td>${r.action}</td><td>${r.date}</td></tr>`).join('');
             res.send(`<style>body{background:#eee; font-family:sans-serif;} table{width:90%; margin:20px auto; border-collapse:collapse;} th,td{padding:12px; border:1px solid #ccc; text-align:left;} th{background:#302b63; color:white;}</style>
             <h2 style="text-align:center">Librarian Master List</h2><table><tr><th>ID</th><th>User</th><th>Book</th><th>Action</th><th>Time</th></tr>${trs}</table><p style="text-align:center"><a href="/">Logout</a></p>`);
@@ -37,5 +49,9 @@ app.post('/admin-panel', (req, res) => {
     }
 });
 
-module.exports = app; // Needed for Vercel
-app.listen(3000,"0.0.0.0");
+// For local testing
+if (!process.env.VERCEL) {
+    app.listen(3000, () => console.log('Server running at http://localhost:3000'));
+}
+
+module.exports = app;
