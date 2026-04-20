@@ -1,86 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
-/* --- INTRO PAGE --- */
 .intro-body {
-    background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), 
-                url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2000&auto=format&fit=crop');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
+    text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: white;
-    text-align: center; /* Centers all text */
-    padding: 20px;
 }
 
 .typing-text {
-    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Adjusts size for mobile */
-    font-weight: 600;
-    border-right: 3px solid #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    margin: 0 auto; /* Centers the div itself */
-    width: fit-content;
-    animation: typing 3.5s steps(30, end) forwards, blink 0.8s infinite;
-}
-
-@keyframes typing { from { width: 0 } to { width: 100% } }
-@keyframes blink { from { border-color: transparent } to { border-color: white } }
-
-/* --- GLASS LAYOUT (Options & Login) --- */
-.glass-bg {
-    background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    margin: 0 auto; /* Centers the header text */
+    text-align: center;
 }
 
 .glass-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 40px;
-    border-radius: 25px;
-    width: 100%;
-    max-width: 400px; /* Limits width on big screens */
-    text-align: center; /* Keeps everything inside centered */
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    color: white;
+    margin: 0 auto; /* Centers the login/options card */
+    text-align: center;
 }
-
-h2 { margin-bottom: 20px; text-align: center; width: 100%; }
-
-.input-box, .icon-select {
-    width: 100%;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 12px 15px;
-    border-radius: 10px;
-    color: white;
-    margin-bottom: 15px;
-    outline: none;
-    text-align: center; /* Centers text inside inputs */
-}
-
-.icon-select option { background: #302b63; }
-
-button {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(to right, #3a7bd5, #00d2ff);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover { transform: scale(1.03); filter: brightness(1.1); }
