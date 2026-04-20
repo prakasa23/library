@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+/* --- INTRO PAGE (Page 1) --- */
+.intro-body {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.typing-text {
+    font-size: 2.5rem;
+    font-weight: 600;
+    border-right: 3px solid #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    animation: typing 3s steps(30, end) forwards, blink 0.8s infinite;
+}
+
+@keyframes typing { from { width: 0 } to { width: 100% } }
+@keyframes blink { from { border-color: transparent } to { border-color: white } }
+
+/* --- GLOBAL GLASSMORPHISM (Login & Options) --- */
+.glass-bg {
+    background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 40px;
+    border-radius: 25px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    color: white;
+}
+
+.input-box {
+    width: 100%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    padding: 12px 15px;
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 20px;
+    outline: none;
+}
+
+.input-box::placeholder { color: rgba(255,255,255,0.7); }
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #00d2ff;
+    background: linear-gradient(to right, #3a7bd5, #00d2ff);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+/* Icons & Select */
+.icon-select { background: rgba(255,255,255,0.1); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; margin-bottom: 20px; }
+.icon-select option { background: #302b63; }
