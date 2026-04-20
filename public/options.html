@@ -4,24 +4,32 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="glass-bg">
+<body class="dashboard-bg">
     <div class="glass-card">
-        <h2><i class="fas fa-book-reader"></i> Library Services</h2>
+        <h2><i class="fas fa-layer-group"></i> Library Options</h2>
         <br>
         <form action="/submit" method="POST">
-            <input type="text" name="user" class="input-box" placeholder="Your Name" required>
-            <input type="text" name="book" class="input-box" placeholder="Book Name" required>
-            
-            <select name="action" class="icon-select">
-                <option value="Take Book">📖 Take Book</option>
-                <option value="Return Book">🔄 Return Book</option>
-                <option value="Buy Book">💰 Buy Book</option>
-                <option value="Wanted Book">⭐ Wanted Book Name</option>
-            </select>
-
-            <button type="submit">PROCESS REQUEST</button>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" name="user" placeholder="Enter Your Name" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-book"></i>
+                <input type="text" name="book" placeholder="Wanted Book Name" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-tasks"></i>
+                <select name="action">
+                    <option value="Taking Book">📖 Take Book</option>
+                    <option value="Returning Book">🔄 Return Book</option>
+                    <option value="Buying Book">💰 Buy Book</option>
+                    <option value="Wanted Book">⭐ Requested Book</option>
+                </select>
+            </div>
+            <button type="submit">SUBMIT REQUEST</button>
         </form>
-        <a href="/login" style="display:block; margin-top:20px; color:#00d2ff; font-size:12px; text-decoration:none;">LIBRARIAN SECURE LOGIN</a>
+        <hr style="margin:20px; border:0; border-top:1px solid rgba(255,255,255,0.2);">
+        <a href="/login" style="color:#00d2ff; text-decoration:none; font-size:13px;">Librarian Login Access</a>
     </div>
 </body>
 </html>
