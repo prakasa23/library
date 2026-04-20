@@ -1,47 +1,84 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
 
-// Use /tmp for Vercel, local folder for VS Code
-const dbPath = process.env.VERCEL ? '/tmp/library.db' : path.join(__dirname, 'library.db');
-const db = new sqlite3.Database(dbPath);
-
-db.serialize(() => {
-    db.run("CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, book TEXT, action TEXT, date DATETIME DEFAULT CURRENT_TIMESTAMP)");
-});
+// This is our "Virtual Database"
+// It works exactly like a database but won't crash Vercel
+let records = []; 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Navigation Routes
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/options', (req, res) => res.sendFile(path.join(__dirname, 'public', 'options.html')));
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 
+// Save a record
 app.post('/submit', (req, res) => {
     const { user, book, action } = req.body;
-    db.run("INSERT INTO records (user, book, action) VALUES (?, ?, ?)", [user, book, action], () => {
-        res.send(`<body style="background:#0f0c29; color:white; display:flex; justify-content:center; align-items:center; height:100vh; font-family:sans-serif; text-align:center;"><div><h2>✔ Action Recorded!</h2><script>setTimeout(()=>window.location.href='/options', 2000)</script></div></body>`);
-    });
+    
+    // Create a new record object
+    const newRecord = {
+        id: records.length + 1,
+        user: user,
+        book: book,
+        action: action,
+        date: new Date().toLocaleString()
+    };
+    
+    records.push(newRecord); // Store it in our list
+    
+    res.send(`
+        <body style="background:#0f0c29; color:white; display:flex; justify-content:center; align-items:center; height:100vh; font-family:sans-serif; text-align:center;">
+            <div>
+                <h2>✔ Action Recorded for ${user}!</h2>
+                <p>Returning to dashboard...</p>
+                <script>setTimeout(()=>window.location.href='/options', 2000)</script>
+            </div>
+        </body>
+    `);
 });
 
+// Admin Panel (Librarian View)
 app.post('/admin-panel', (req, res) => {
     const { username, password } = req.body;
+    
     if (username === 'admin' && password === '1234') {
-        db.all("SELECT * FROM records", (err, rows) => {
-            let trs = rows.map(r => `<tr><td>${r.id}</td><td>${r.user}</td><td>${r.book}</td><td>${r.action}</td><td>${r.date}</td></tr>`).join('');
-            res.send(`<style>body{background:#eee; font-family:sans-serif;} table{width:95%; margin:20px auto; border-collapse:collapse;} th,td{padding:12px; border:1px solid #ccc; text-align:left;} th{background:#302b63; color:white;} h2{text-align:center;}</style>
-            <h2>Librarian Master List</h2><table><tr><th>ID</th><th>User</th><th>Book</th><th>Action</th><th>Time</th></tr>${trs}</table><p style="text-align:center"><a href="/">Logout</a></p>`);
-        });
+        // Build the table rows from our records list
+        let trs = records.map(r => `
+            <tr>
+                <td>${r.id}</td>
+                <td>${r.user}</td>
+                <td>${r.book}</td>
+                <td>${r.action}</td>
+                <td>${r.date}</td>
+            </tr>`).join('');
+
+        res.send(`
+            <style>
+                body{background:#eee; font-family:sans-serif;} 
+                table{width:95%; margin:20px auto; border-collapse:collapse; background:white;} 
+                th,td{padding:12px; border:1px solid #ccc; text-align:left;} 
+                th{background:#302b63; color:white;} 
+                h2{text-align:center;}
+            </style>
+            <h2>Librarian Master List</h2>
+            <table>
+                <tr><th>ID</th><th>User</th><th>Book</th><th>Action</th><th>Time</th></tr>
+                ${trs || '<tr><td colspan="5" style="text-align:center">No records found yet.</td></tr>'}
+            </table>
+            <p style="text-align:center"><a href="/">Logout</a></p>
+        `);
     } else {
-        res.send("<div style='text-align:center; margin-top:50px; font-family:sans-serif;'><h2>Access Denied!</h2><a href='/login'>Try Again</a></div>");
+        res.send("<div style='text-align:center; margin-top:50px; font-family:sans-serif;'><h2>Access Denied!</h2><p>Incorrect Username or Password.</p><a href='/login'>Try Again</a></div>");
     }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
